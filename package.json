@@ -1,0 +1,42 @@
+{
+  "name": "react-interactive-ascii",
+  "version": "0.1.0",
+  "description": "Interactive ASCII logo",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "rollup": "rollup -c",
+    "build": "tsc && rollup -c"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@types/react": "^19.3.0",
+    "postcss": "^8.5.28",
+    "postcss-url": "^10.1.4",
+    "react": "^19.3.0",
+    "rollup": "^4.63.5",
+    "rollup-plugin-esbuild": "^6.2.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "rollup-plugin-esbuild@6.2.1": true
+  }
+}
