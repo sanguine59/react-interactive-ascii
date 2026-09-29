@@ -37,10 +37,6 @@ body:
     attributes:
       label: Steps to reproduce
       description: A minimal snippet beats a description. Link a StackBlitz or repo if you have one.
-      value: |
-        1.
-        2.
-        3.
     validations:
       required: true
 
