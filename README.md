@@ -1,10 +1,12 @@
 # react-interactive-ascii
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)[![npm version](https://img.shields.io/npm/v/react-interactive-ascii.svg)](https://www.npmjs.com/package/react-interactive-ascii)
 
-**Your logo. Made of code. Alive to every touch.**
+**Your logo. Alive out of ASCII.**
 
 `react-interactive-ascii` is a lightweight React component that turns any image or logo into an interactive ASCII particle canvas — physics, hover repulsion, and click-driven animations included.
 
-One component. Zero runtime dependencies. Monospace font bundled.
+---
+<img width="960" height="540" alt="Untitleddesign-ezgif com-optimize" src="https://github.com/user-attachments/assets/4930aae7-4ec6-4822-9973-a9808a9e34d0" />
 
 ---
 
@@ -73,14 +75,6 @@ Every rendered character is an active particle that responds to your pointer and
 | :--- | :--- | :--- | :--- |
 | **`src`** | `string` | *required* | Path or URL to the image to sample. |
 | **`alt`** | `string` | `""` | Alt text for the underlying fallback image element. |
-
----
-
-## Built Lean
-
-- **No runtime dependencies**: Built purely with React 18+ and native HTML5 Canvas 2D.
-- **No external fonts to host**: The custom `Iosevka Web` monospace font is inlined directly in the bundle as base64 WOFF2.
-- **Retina-ready**: Automatically scales with `window.devicePixelRatio` for razor-sharp characters on high-DPI displays.
 
 ---
 
