@@ -25,6 +25,7 @@ type Phase = "logo" | "scattered" | "fallen" | "returning";
 export interface InteractiveAsciiProps {
   src: string;
   alt?: string;
+  logo_cols?: number;
 }
 
 interface AsciiCell {
@@ -53,7 +54,7 @@ function easeToward(cell: AsciiCell, targetX: number, targetY: number, ease: num
   cell.offsetY += (targetY - cell.offsetY) * ease;
 }
 
-function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
+function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS}: InteractiveAsciiProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
 
@@ -93,7 +94,7 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
       const samplerContext = sampler.getContext("2d");
       if (!samplerContext) return;
 
-      const logoCols = Math.min(LOGO_COLS, gridCols);
+      const logoCols = Math.min(logo_cols, gridCols);
       const logoRows = Math.round(logoCols * logo.naturalHeight / logo.naturalWidth);
       const originCol = Math.floor((gridCols - logoCols) / 2);
       const originRow = Math.floor((gridRows - logoRows) / 2);
