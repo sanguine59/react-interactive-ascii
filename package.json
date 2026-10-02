@@ -17,8 +17,10 @@
     "dist"
   ],
   "scripts": {
+    "dev": "vite",
     "rollup": "rollup -c",
-    "build": "tsc && rollup -c"
+    "build": "tsc && rollup -c",
+    "typecheck": "tsc --noEmit -p playground/tsconfig.json"
   },
   "peerDependencies": {
     "react": ">=18"
@@ -27,16 +29,21 @@
     "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
     "postcss": "^8.5.28",
     "postcss-url": "^10.1.4",
     "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "rollup": "^4.63.5",
     "rollup-plugin-esbuild": "^6.2.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2"
   },
   "allowScripts": {
-    "rollup-plugin-esbuild@6.2.1": true
+    "rollup-plugin-esbuild@6.2.1": true,
+    "esbuild@0.28.2": true
   }
 }
