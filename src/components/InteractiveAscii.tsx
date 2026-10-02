@@ -3,10 +3,9 @@ import "./InteractiveAscii.css"
 
 const CELL_SIZE = 4;
 const CELL_GAP = 3;
-const CELL_STEP = CELL_SIZE + CELL_GAP;
 const ASCII_COLOR = "#dadada"
 const ASCII_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-const ASCII_FONT = `${CELL_SIZE + 2}px "Iosevka Web", monospace`;
+const ASCII_FONT_FAMILY = `"Iosevka Web", monospace`;
 const BRIGHTNESS_THRESHOLD = 0.5;
 const ASCII_MIN_WIDTH = 1000;
 const LOGO_COLS = 132;
@@ -25,6 +24,9 @@ type Phase = "logo" | "scattered" | "fallen" | "returning";
 export interface InteractiveAsciiProps {
   src: string;
   alt?: string;
+  logo_cols?: number;
+  cell_size?: number;
+  cell_gap?: number;
 }
 
 interface AsciiCell {
@@ -53,7 +55,7 @@ function easeToward(cell: AsciiCell, targetX: number, targetY: number, ease: num
   cell.offsetY += (targetY - cell.offsetY) * ease;
 }
 
-function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
+function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CELL_SIZE, cell_gap = CELL_GAP}: InteractiveAsciiProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
 
@@ -61,6 +63,9 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
     const canvas = canvasRef.current;
     const logo = logoRef.current;
     if (!canvas || !logo) return;
+
+    const cellStep = cell_size + cell_gap;
+    const asciiFont = `${cell_size + 2}px ${ASCII_FONT_FAMILY}`;
 
     const context = canvas.getContext("2d");
     if (!context) return;
@@ -79,8 +84,8 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
         return;
       }
 
-      gridCols = Math.floor(window.innerWidth / CELL_STEP);
-      gridRows = Math.floor(window.innerHeight / CELL_STEP);
+      gridCols = Math.floor(window.innerWidth / cellStep);
+      gridRows = Math.floor(window.innerHeight / cellStep);
       canvas.width = window.innerWidth * pixelRatio;
       canvas.height = window.innerHeight * pixelRatio;
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -93,7 +98,7 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
       const samplerContext = sampler.getContext("2d");
       if (!samplerContext) return;
 
-      const logoCols = Math.min(LOGO_COLS, gridCols);
+      const logoCols = Math.min(logo_cols, gridCols);
       const logoRows = Math.round(logoCols * logo.naturalHeight / logo.naturalWidth);
       const originCol = Math.floor((gridCols - logoCols) / 2);
       const originRow = Math.floor((gridRows - logoRows) / 2);
@@ -190,15 +195,15 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
 
     const drawAscii = (): void => {
       context.clearRect(0,0,window.innerWidth, window.innerHeight);
-      context.font = ASCII_FONT;
+      context.font = asciiFont;
       context.textBaseline = "top";
       context.textAlign = "center";
       context.fillStyle = ASCII_COLOR;
 
 
       for(const {col, row, char, offsetX, offsetY} of asciiCells) {
-        const x = (col + offsetX) * CELL_STEP;
-        const y = (row + offsetY) * CELL_STEP;
+        const x = (col + offsetX) * cellStep;
+        const y = (row + offsetY) * cellStep;
         context.fillText(char, x, y);
       }
     };
@@ -212,8 +217,8 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
     };
 
     const handleMouseMove = (event: MouseEvent): void => {
-      cursor.col = event.clientX / CELL_STEP;
-      cursor.row = event.clientY / CELL_STEP;
+      cursor.col = event.clientX / cellStep;
+      cursor.row = event.clientY / cellStep;
     };
 
     const handleClick = (): void => {
@@ -238,7 +243,7 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
     if(logo.complete) buildAsciiFromLogo();
 
     let cancelled = false;
-    document.fonts.load(ASCII_FONT).then(() => {
+    document.fonts.load(asciiFont).then(() => {
       if(!cancelled) buildAsciiFromLogo();
     });
 
@@ -252,7 +257,7 @@ function InteractiveAscii({src, alt = ""}: InteractiveAsciiProps) {
       window.removeEventListener("resize", buildAsciiFromLogo);
       logo.removeEventListener("load", buildAsciiFromLogo);
     };
-  }, []);
+  }, [src, logo_cols, cell_size, cell_gap]);
 
   return (
     <div>
