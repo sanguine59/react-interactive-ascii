@@ -1,7 +1,27 @@
 {
   "name": "react-interactive-ascii",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Interactive ASCII logo",
+  "license": "MIT",
+  "author": "sanguine59",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanguine59/react-interactive-ascii.git"
+  },
+  "homepage": "https://github.com/sanguine59/react-interactive-ascii#readme",
+  "bugs": {
+    "url": "https://github.com/sanguine59/react-interactive-ascii/issues"
+  },
+  "keywords": [
+    "react",
+    "ascii",
+    "ascii-art",
+    "canvas",
+    "animation",
+    "logo",
+    "interactive",
+    "react-component"
+  ],
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

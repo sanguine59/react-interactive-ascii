@@ -1,5 +1,5 @@
 # react-interactive-ascii
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)[![npm version](https://img.shields.io/npm/v/react-interactive-ascii.svg)](https://www.npmjs.com/package/react-interactive-ascii)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/sanguine59/react-interactive-ascii/blob/main/LICENSE)[![npm version](https://img.shields.io/npm/v/react-interactive-ascii.svg)](https://www.npmjs.com/package/react-interactive-ascii)
 
 **Your logo. Alive out of ASCII.**
 
@@ -80,7 +80,7 @@ Every rendered character is an active particle that responds to your pointer and
 
 ## Contributing
 
-Pull requests are welcome! Check out [CONTRIBUTING.md](./CONTRIBUTING.md) for local development setup, commit conventions, and guidelines.
+Pull requests are welcome! Check out [CONTRIBUTING.md](https://github.com/sanguine59/react-interactive-ascii/blob/main/CONTRIBUTING.md) for local development setup, commit conventions, and guidelines.
 
 ```bash
 npm install
@@ -91,4 +91,4 @@ npm run build
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](https://github.com/sanguine59/react-interactive-ascii/blob/main/LICENSE)
