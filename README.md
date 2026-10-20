@@ -58,6 +58,16 @@ Every rendered character is an active particle that responds to your pointer and
   - **`fallen`** — Gravity pulls particles down with elastic floor bounce.
   - **`returning`** — Characters smoothly spring back to their home coordinates and reset to `logo`.
 
+The click sequence is customizable via the `states` prop. Entering `logo` always plays the `returning` animation first, and clicks are ignored until it finishes:
+
+```tsx
+// Only scatter and reassemble
+<InteractiveAscii src="/logo.svg" states={["logo", "scattered"]} />
+
+// Start scattered, drop, then form the logo
+<InteractiveAscii src="/logo.svg" states={["scattered", "fallen", "logo"]} />
+```
+
 <details>
 <summary>Best image practices for ASCII sampling</summary>
 
@@ -75,6 +85,7 @@ Every rendered character is an active particle that responds to your pointer and
 | :--- | :--- | :--- | :--- |
 | **`src`** | `string` | *required* | Path or URL to the image to sample. |
 | **`alt`** | `string` | `""` | Alt text for the underlying fallback image element. |
+| **`states`** | `AsciiState[]` | `["logo", "scattered", "fallen"]` | Sequence of states to cycle through on click. Each click advances to the next entry, wrapping back to the first. Allowed values: `"logo"`, `"scattered"`, `"fallen"`. |
 
 ---
 
