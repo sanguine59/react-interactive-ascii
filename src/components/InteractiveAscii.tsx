@@ -18,8 +18,10 @@ const BOUNCE = 0.25;
 const GRAVITY = 0.05;
 const RESET_EASE = 0.05;
 const STAGGER_FRAMES = 18;
+const DEFAULT_STATES: AsciiState[] = ["logo", "scattered", "fallen"];
 
-type Phase = "logo" | "scattered" | "fallen" | "returning";
+export type AsciiState = "logo" | "scattered" | "fallen";
+type Phase = AsciiState | "returning";
 
 export interface InteractiveAsciiProps {
   src: string;
@@ -27,6 +29,7 @@ export interface InteractiveAsciiProps {
   logo_cols?: number;
   cell_size?: number;
   cell_gap?: number;
+  states?: AsciiState[];
 }
 
 interface AsciiCell {
@@ -55,9 +58,11 @@ function easeToward(cell: AsciiCell, targetX: number, targetY: number, ease: num
   cell.offsetY += (targetY - cell.offsetY) * ease;
 }
 
-function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CELL_SIZE, cell_gap = CELL_GAP}: InteractiveAsciiProps) {
+function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CELL_SIZE, cell_gap = CELL_GAP, states = DEFAULT_STATES}: InteractiveAsciiProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
+  const statesRef = useRef(states);
+  statesRef.current = states.length > 0 ? states : DEFAULT_STATES;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -72,7 +77,8 @@ function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CEL
 
     const pixelRatio = window.devicePixelRatio || 1;
 
-    let phase: Phase = "logo";
+    let phase: Phase = statesRef.current[0];
+    let stateIndex = 0;
     let gridCols = 0, gridRows = 0;
     let asciiCells: AsciiCell[] = [];
     let frameId = 0;
@@ -222,17 +228,21 @@ function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CEL
     };
 
     const handleClick = (): void => {
-      if(asciiCells.length === 0) return;
+      if(asciiCells.length === 0 || phase === "returning") return;
 
-      if(phase === "logo") {
-        phase = "scattered";
-        staggerCells();
-      } else if (phase === "scattered") {
-        phase = "fallen";
-        for(const cell of asciiCells) cell.fallSpeed = 0;
-      } else if (phase === "fallen") {
+      const sequence = statesRef.current;
+      stateIndex = (stateIndex + 1) % sequence.length;
+      const next = sequence[stateIndex];
+
+      if(next === "logo") {
         phase = "returning";
         staggerCells();
+      } else if (next === "scattered") {
+        phase = "scattered";
+        staggerCells();
+      } else if (next === "fallen") {
+        phase = "fallen";
+        for(const cell of asciiCells) cell.fallSpeed = 0;
       }
     };
 
