@@ -30,6 +30,12 @@ export interface InteractiveAsciiProps {
   cell_size?: number;
   cell_gap?: number;
   states?: AsciiState[];
+  resolution?: Resolution;
+}
+
+export interface Resolution {
+  width: number;
+  height: number;
 }
 
 interface AsciiCell {
@@ -58,7 +64,7 @@ function easeToward(cell: AsciiCell, targetX: number, targetY: number, ease: num
   cell.offsetY += (targetY - cell.offsetY) * ease;
 }
 
-function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CELL_SIZE, cell_gap = CELL_GAP, states = DEFAULT_STATES}: InteractiveAsciiProps) {
+function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CELL_SIZE, cell_gap = CELL_GAP, states = DEFAULT_STATES, resolution}: InteractiveAsciiProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
   const statesRef = useRef(states);
@@ -76,10 +82,13 @@ function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CEL
     if (!context) return;
 
     const pixelRatio = window.devicePixelRatio || 1;
+    const virtualResolutionWidth = resolution?.width;
+    const virtualResolutionHeight = resolution?.height;
 
     let phase: Phase = statesRef.current[0];
     let stateIndex = 0;
     let gridCols = 0, gridRows = 0;
+    let viewScale = 1, viewOriginX = 0, viewOriginY = 0;
     let asciiCells: AsciiCell[] = [];
     let frameId = 0;
     const cursor: Cursor = {col: -999, row : -999};
@@ -90,11 +99,20 @@ function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CEL
         return;
       }
 
-      gridCols = Math.floor(window.innerWidth / cellStep);
-      gridRows = Math.floor(window.innerHeight / cellStep);
-      canvas.width = window.innerWidth * pixelRatio;
-      canvas.height = window.innerHeight * pixelRatio;
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      const { width: viewWidth, height: viewHeight } = canvas.getBoundingClientRect();
+      const virtualWidth = virtualResolutionWidth ?? viewWidth;
+      const virtualHeight = virtualResolutionHeight ?? viewHeight;
+
+      viewScale = Math.min(viewWidth / virtualWidth, viewHeight / virtualHeight);
+      viewOriginX = (viewWidth - virtualWidth * viewScale) / 2;
+      viewOriginY = (viewHeight - virtualHeight * viewScale) / 2;
+
+      gridCols = Math.floor(virtualWidth / cellStep);
+      gridRows = Math.floor(virtualHeight / cellStep);
+      canvas.width = viewWidth * pixelRatio;
+      canvas.height = viewHeight * pixelRatio;
+      const drawScale = pixelRatio * viewScale;
+      context.setTransform(drawScale, 0, 0, drawScale, viewOriginX * pixelRatio, viewOriginY * pixelRatio);
 
       if (!logo.naturalWidth) return;
 
@@ -200,7 +218,10 @@ function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CEL
     };
 
     const drawAscii = (): void => {
-      context.clearRect(0,0,window.innerWidth, window.innerHeight);
+      context.save();
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.restore();
       context.font = asciiFont;
       context.textBaseline = "top";
       context.textAlign = "center";
@@ -223,8 +244,9 @@ function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CEL
     };
 
     const handleMouseMove = (event: MouseEvent): void => {
-      cursor.col = event.clientX / cellStep;
-      cursor.row = event.clientY / cellStep;
+      const rect = canvas.getBoundingClientRect();
+      cursor.col = (event.clientX - rect.left - viewOriginX) / viewScale / cellStep;
+      cursor.row = (event.clientY - rect.top - viewOriginY) / viewScale / cellStep;
     };
 
     const handleClick = (): void => {
@@ -267,7 +289,7 @@ function InteractiveAscii({src, alt = "", logo_cols = LOGO_COLS, cell_size = CEL
       window.removeEventListener("resize", buildAsciiFromLogo);
       logo.removeEventListener("load", buildAsciiFromLogo);
     };
-  }, [src, logo_cols, cell_size, cell_gap]);
+  }, [src, logo_cols, cell_size, cell_gap, resolution?.width, resolution?.height]);
 
   return (
     <div>
