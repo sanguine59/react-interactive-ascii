@@ -86,6 +86,7 @@ The click sequence is customizable via the `states` prop. Entering `logo` always
 | **`src`** | `string` | *required* | Path or URL to the image to sample. |
 | **`alt`** | `string` | `""` | Alt text for the underlying fallback image element. |
 | **`states`** | `AsciiState[]` | `["logo", "scattered", "fallen"]` | Sequence of states to cycle through on click. Each click advances to the next entry, wrapping back to the first. Allowed values: `"logo"`, `"scattered"`, `"fallen"`. |
+| **`resolution`** | `{ width: number; height: number }` | — | Fixed virtual resolution for the ASCII grid. The layout is computed in this space and scaled to fit the canvas (centered, aspect ratio preserved), so it looks the same on any screen size. Defaults to the canvas's actual size. |
 
 ---
 
